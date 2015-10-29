@@ -1,0 +1,154 @@
+#!/bin/sh 
+#edit by lzqie
+#lzqie@163.com
+#需要重启，请使用enforce_restart
+
+
+##获取出口ip,需要有其他的在通过IP判断，这里只使用了eth0
+ip=`ifconfig eth0 | grep inet\ a | awk -F'addr:|  Bcast' '{print $2}'`
+
+############################
+stop_to_all () {
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -F
+iptables -t nat -F
+iptables -X
+iptables -t nat -X
+}
+############################
+clear_to_all () {
+iptables -F 
+iptables -t nat -F 
+iptables -X 
+iptables -t nat -X
+}
+############################
+install_mod () {
+modules="ip_tables iptable_nat ip_nat_ftp ip_nat_irc ip_conntrack ip_conntrack_ftp ip_conntrack_irc"
+for mod in $modules
+do
+    testmod=`lsmod | grep "^${mod} " | awk '{print $1}'`
+    if [ "$testmod" == "" ]; then
+          modprobe $mod
+    fi
+done
+
+echo "1" > /proc/sys/net/ipv4/ip_forward
+echo "1" > /proc/sys/net/ipv4/tcp_syncookies
+
+for i in /proc/sys/net/ipv4/conf/*/{rp_filter,log_martians}
+do
+      echo "1" > $i
+done
+for i in /proc/sys/net/ipv4/conf/*/{accept_source_route,accept_redirects,send_redirects}
+do
+      echo "0" > $i
+done
+}
+##########################
+start_to_all () {
+iptables -P INPUT DROP
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -i lo -j ACCEPT 
+iptables -A INPUT -p icmp -m icmp --icmp-type any -j ACCEPT 
+iptables -A INPUT -m addrtype --dst-type MULTICAST -j ACCEPT 
+#iptables -A INPUT -s 221.12.88.128/255.255.255.128 -j ACCEPT 
+iptables -A INPUT -s 10.0.0.0/8 -j ACCEPT 
+iptables -A INPUT -p esp -j ACCEPT 
+iptables -A INPUT -p ah -j ACCEPT 
+#iptables -A INPUT -d 224.0.0.251 -p udp -m udp --dport 5353 -j ACCEPT 
+iptables -A INPUT -p udp -m udp --dport 631 -j ACCEPT 
+iptables -A INPUT -s 182.139.133.160 -j ACCEPT
+iptables -A INPUT -s 182.138.102.186 -j ACCEPT
+iptables -A INPUT -s 182.138.102.187 -j ACCEPT
+
+####################
+#允许13021端口
+#iptables -A INPUT  -p tcp -m state --state NEW -m tcp --dport 13021 -j ACCEPT
+
+#允许转发
+#iptables -P FORWARD ACCEPT
+#iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+####################NAT链
+#九伐socket转发
+#九伐中原官方socket端口范围9340-9700 域名:game.sX.9.9wee.com
+#iptables -t nat -A PREROUTING -p tcp -m tcp --dport 9340 -j DNAT --to-destination 122.226.59.93
+
+#新小李飞刀官网socket端口范围20000~30000
+#iptables -t nat -A PREROUTING  -p tcp -m tcp --dport 20000:20009 -j DNAT --to-destination 122.227.59.137
+
+}
+
+_status () {
+        for table in filter  nat; do
+        echo $"Table: $table"
+        iptables  -t $table --list  -n  --verbose  --line-numbers && echo
+        done
+}
+#################颜色方案
+echo_r() {    echo  "\033[31;1m $1\033[0m";}
+echo_g() {    echo  "\033[32;1m $1\033[0m";}
+#arg="start"
+if [ $# -ne 0  ];then
+	if  [ "$1" = "start" -o  "$1" = "status" -o "$1" = "stop" -o "$1" = "restart" -o "$1" = "reload" -o "$1" = "enforce_restart" ]
+        then
+        arg="$1"
+	else
+	#echo $arg
+	:
+	fi
+else
+        echo "Please enter: <start>  or <stop>; <restart>  or <reload> ; <status> ; and warning args!--<enforce_restart>"
+        exit
+fi
+
+case $arg in 
+	start )
+        #install_mod
+	clear_to_all
+	start_to_all
+       echo_r $ip
+       echo  " -<start>- " 
+       echo_g "[SUCCESS] "
+       echo "please check directory in  \"/iptables/*\""
+	;;
+	stop)
+       stop_to_all
+       echo_r $ip
+       echo  " -<stop>- " 
+       echo_g "[SUCCESS] "
+       echo "please check directory in  \"/iptables/*\""
+	;;
+	restart|reload)
+	clear_to_all
+	start_to_all
+       echo_r $ip
+       echo  " -<reload>- " 
+       echo_g "[SUCCESS] "
+       echo "please check directory in  \"/iptables/*\""
+	;;
+	enforce_restart)
+        #install_mod
+	stop_to_all
+	start_to_all
+       echo_r $ip
+       echo  " -<enforce_restart>- " 
+       echo_g "[SUCCESS] "
+       echo "please check directory in  \"/iptables/*\""
+	;;
+        status)
+        _status
+       echo_r $ip
+       echo  " -<status>- " 
+       echo_g "[SUCCESS] "
+       echo "please check directory in  \"/iptables/*\""
+        ;;
+	*)
+	:
+	;;
+esac
+###############################rsync 推送回各个防火墙的状态
+/sbin/iptables-save > /tmp/"$ip"_`date  +%Y-%m-%d-%s`.iptables
+#rsync  -a  --port=18899  --contimeout=20  /tmp/"$ip"_`date  +%Y-%m-%d`.iptables   42.62.12.71::iptables

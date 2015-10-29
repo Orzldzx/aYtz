@@ -1,0 +1,2 @@
+mysql-community-server    mysql-community-server/re-root-pass   password  123456
+mysql-community-server    mysql-community-server/root-pass    password  123456

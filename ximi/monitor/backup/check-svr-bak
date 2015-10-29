@@ -1,0 +1,53 @@
+#!/bin/bash
+# liuliqiao
+# 2015-10-22
+
+[[ -d /svndata/svr ]] || echo 1 && exit
+
+if [[ "$1" = "conf" ]]; then
+	time=$(date +%m%d_%H)
+	mkdir -p /bakcfg/conf."$time"_bak
+	rsync --port 1888 --bwlimit=20000 --delete --exclude=log/ --exclude=core -avz /svndata/svr/config/ /bakcfg/conf."$time"_bak
+	for i in $(find /bakcfg/ -maxdepth 1 -type d -mtime +7|grep -v ^\/bakcfg\/$ )
+        do 
+            echo $i
+            rm -rf $i
+        done
+
+elif [[ "$1" = "bak" ]]; then
+	time=$(date +%y%m%d-%H%M%S)
+	[ -d /alidata1/Go_back ] || mkdir -p /alidata1/Go_back
+	rsync --port 1888 --bwlimit=20000 --delete --exclude=log/ --exclude=core -avz /svndata/ /alidata1/Go_back/svndata.${time}.ver
+	if [ $(ls -Al /alidata1/Go_back|wc -l) -gt 6 ];then
+	    line=$(ls /alidata1/Go_back|sort -n|head -1)
+	    rm -rf /alidata1/Go_back/$line
+	fi
+
+elif [[ "$1" = "check" ]]; then
+	cd /bakcfg/ 
+	time=$(date +"%m%d_%H")
+	newsize=$(du -sb "svndata."$time"_bak" |awk '{print $1}')
+	oldtime=$(date -d '-1 day' +"%m%d_%H")
+	oldsize=$(du -sb "svndata."$oldtime"_bak" |awk '{print $1}')
+	size=$((${newsize}-${oldsize}))
+	if [ $size -ge -20000000  -a  $size -le 20000000 ]
+
+	then
+       		echo 1
+	else
+        	echo 0
+	fi
+
+else
+	time=$(date +"%m%d_%H")
+	mkdir -p /bakcfg/svndata."$time"_bak
+	rsync --port 1888 --bwlimit=20000 --delete --exclude=log --exclude=core -avz /svndata/ /bakcfg/svndata."$time"_bak
+	for i in $(find /bakcfg/ -maxdepth 1 -type d -mtime +7|grep -v ^\/bakcfg\/$ )
+        do 
+	    echo $i 
+	    rm -rf $i
+	done
+		
+fi
+
+
