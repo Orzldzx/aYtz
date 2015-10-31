@@ -10,6 +10,7 @@ BakName=mongo-${DBNAME}
 Tpath=/alidata1/tmp
 KeepName=mongo-ddz_$(date -d '-6 day' +%F)
 
+#按照端口循环备份mongo
 for port in $(netstat -tlnp|grep -v ^tcp6|grep mongo|awk -F: '{print $2}'|awk '{print $1}')
 do
     Bpath=/data/mongod_backup/$port

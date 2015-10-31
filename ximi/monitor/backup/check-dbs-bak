@@ -25,7 +25,7 @@ do
 done
 
 #$1=database_name
-check_log(){
+check_log(){	#对比大小
     logfile=/data/${1}_backup/${2}/${1}.log
     if [[ "${1}" = "mysqld" || "${1}" = "mongod" ]]; then
         new_size=$(grep "^${date}" ${logfile}|cut -d'+' -f2)
@@ -47,7 +47,7 @@ check_log(){
 
 [ ! -s $tmpfile ] && echo 0 && exit
 
-while read line_name line_port
+while read line_name line_port	#大小小于0则+n
 do
     check_log ${line_name} ${line_port}
     if [ ${size} -lt 0 ]; then

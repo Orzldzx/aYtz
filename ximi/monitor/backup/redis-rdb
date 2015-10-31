@@ -9,6 +9,7 @@ now_time=$(date +%F\ %T)
 dpath="/data/redis"
 backuppath="/data/redis-server_backup"
 
+#按端口循环备份redis
 for port in $(netstat -tlnp|grep redis-server|grep -w '^tcp'|awk -F':| ' '{print $17}'|uniq)
 do
     baknow="$backuppath/$port"

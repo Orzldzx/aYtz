@@ -4,7 +4,7 @@
 
 [[ -d /svndata/svr ]] || echo 1 && exit
 
-if [[ "$1" = "conf" ]]; then
+if [[ "$1" = "conf" ]]; then	#备份配置文件
 	time=$(date +%m%d_%H)
 	mkdir -p /bakcfg/conf."$time"_bak
 	rsync --port 1888 --bwlimit=20000 --delete --exclude=log/ --exclude=core -avz /svndata/svr/config/ /bakcfg/conf."$time"_bak
@@ -14,7 +14,7 @@ if [[ "$1" = "conf" ]]; then
             rm -rf $i
         done
 
-elif [[ "$1" = "bak" ]]; then
+elif [[ "$1" = "bak" ]]; then	#回滚方式备份
 	time=$(date +%y%m%d-%H%M%S)
 	[ -d /alidata1/Go_back ] || mkdir -p /alidata1/Go_back
 	rsync --port 1888 --bwlimit=20000 --delete --exclude=log/ --exclude=core -avz /svndata/ /alidata1/Go_back/svndata.${time}.ver
@@ -23,7 +23,7 @@ elif [[ "$1" = "bak" ]]; then
 	    rm -rf /alidata1/Go_back/$line
 	fi
 
-elif [[ "$1" = "check" ]]; then
+elif [[ "$1" = "check" ]]; then	#检查备份是否成功
 	cd /bakcfg/ 
 	time=$(date +"%m%d_%H")
 	newsize=$(du -sb "svndata."$time"_bak" |awk '{print $1}')
@@ -38,7 +38,7 @@ elif [[ "$1" = "check" ]]; then
         	echo 0
 	fi
 
-else
+else	#完整备份
 	time=$(date +"%m%d_%H")
 	mkdir -p /bakcfg/svndata."$time"_bak
 	rsync --port 1888 --bwlimit=20000 --delete --exclude=log --exclude=core -avz /svndata/ /bakcfg/svndata."$time"_bak
@@ -49,5 +49,4 @@ else
 	done
 		
 fi
-
 
