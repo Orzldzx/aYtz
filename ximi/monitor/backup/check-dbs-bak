@@ -50,7 +50,7 @@ check_log(){	#对比大小
 while read line_name line_port	#大小小于0则+n
 do
     check_log ${line_name} ${line_port}
-    if [ ${size} -lt 0 ]; then
+    if [[ ${size} -lt "-52428800" || ${size} -gt "52428800" ]]; then
         case ${line_name} in
             mysqld)
                 n=1;;
