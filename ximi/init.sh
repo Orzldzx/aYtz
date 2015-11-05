@@ -7,8 +7,8 @@
 [ $UID -ne 0 ] && { echo "Usage: sudo su -" ; exit 1 ; }
 
 _print(){    #打印信息
-    printf "\n\t*************************************\n"
-    printf "****** \033[1;7;5;40;32m%-25s\033[0m \n" $*
+    printf "\n    *************************************\n"
+    printf "  ****** \033[1;7;5;40;32m%-s\033[0m \n" $*
     printf "*************************************\n"
     sleep 3
 }
@@ -115,7 +115,7 @@ apt-get install -y -qq iftop
 apt-get install -y -qq bc
 apt-get install -y -qq acl
 apt-get install -y -qq sysstat
-apt-get upgrade -y -qq glibc
+apt-get upgrade -y -qq glibc > /dev/null
 
 # git clone git://github.com/kongjian/tsar.git          #使用sysstat
 # cd tsar/
@@ -129,8 +129,8 @@ wget -q http://10.140.34.28/xyj/config-file/rsyncd.conf -O /etc/rsyncd.conf
 pkill rsync && /usr/bin/rsync --daemon
 
 
-_print 安装配置zabbix-agent-agent
 # 安装zabbix-agent
+_print 安装配置zabbix-agent
 while [ ! -f /etc/zabbix/zabbix_agentd.conf ]
 do
     sleep 5
@@ -188,26 +188,26 @@ service zabbix-agent restart
 
 ## >>>>>>>>>>>>>>>>>>>>>>>>> mysql5.6.26 <<<<<<<<<<<<<<<<<<<<<<<<<
 #_print 安装配置mysql-5.6.26
-##  下载
-#   wget -r -np -nd -q -A deb,pass http://10.140.34.28/xyj/app-file/mysql/ -P /tmp/
-##  安装
-#   dpkg-preconfigure /tmp/mysql-*
-#   debconf-set-selections /tmp/mysql.pass
-#   dpkg -i /tmp/libaio1* /tmp/mysql-*
-#   service mysql stop
-##  配置
-#   mkdir -p /data/mysql/{db,binlog}
-#   chown -R mysql:mysql /data/mysql
-#   mv /etc/mysql/my.cnf{,.bak}
-#   wget -q http://10.140.34.28/xyj/config-file/my.cnf -O /etc/mysql/my.cnf
-#   wget -q http://10.140.34.28/xyj/config-file/usr.sbin.mysqld -O /etc/apparmor.d/usr.sbin.mysqld
-#   service apparmor restart
-##  初始化
-#   mysql_install_db --defaults-extra-file=/etc/mysql/my.cnf
-##  启动
-#   service mysql start
-##  清理
-#   rm -rf /tmp/mysql* /tmp/index* /tmp/libaio1*
+## 下载
+#wget -r -np -nd -q -A deb,pass http://10.140.34.28/xyj/app-file/mysql/ -P /tmp/
+## 安装
+#debconf-set-selections /tmp/mysql.pass
+#dpkg-preconfigure /tmp/mysql-*
+#dpkg -i /tmp/libaio1* /tmp/mysql-*
+#service mysql stop
+## 配置
+#mkdir -p /data/mysql/{db,binlog}
+#chown -R mysql:mysql /data/mysql
+#mv /etc/mysql/my.cnf{,.bak}
+#wget -q http://10.140.34.28/xyj/config-file/my.cnf -O /etc/mysql/my.cnf
+#wget -q http://10.140.34.28/xyj/config-file/usr.sbin.mysqld -O /etc/apparmor.d/usr.sbin.mysqld
+#service apparmor restart
+## 初始化
+#mysql_install_db --defaults-extra-file=/etc/mysql/my.cnf
+## 启动
+#service mysql start
+## 清理
+#rm -rf /tmp/mysql* /tmp/index* /tmp/libaio1*
 
 #----------------------------------------------------------------------
 
@@ -277,7 +277,7 @@ _print 配置全局环境变量
 #alias ....='cd ../../..'
 #mkcd(){ mkdir -p \$1 ; cd \$1 ; }
 
-wget -q http://120.92.226.38/env/profile -O /etc/profile
+wget -q http://120.92.226.38/xyj/Initialize/profile -O /etc/profile
 
 # core file
 echo "/data/corefile/core-%e-%p-%t" > /proc/sys/kernel/core_pattern
@@ -315,4 +315,4 @@ _print 清理临时文件
 cd /tmp
 rm -rf automount_data_block.sh sshd-for-key.sh zabbix.deb 6379.conf *.iptables oldhistory redis-3.0.4.tar.gz $0
 
-_print 初始化完成!
+_print 初始化完成
