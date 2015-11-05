@@ -134,13 +134,13 @@ _print 安装配置zabbix-agent
 # 下载
 groupadd zabbix && useradd -g zabbix zabbix -s /bin/false
 wget -q http://10.140.34.28/xyj/app-file/zabbix/zabbix-2.4.6.tar.gz -P /tmp/
-tar xf /tmp/zabbix-2.4.6.tar.gz
+tar xf /tmp/zabbix-2.4.6.tar.gz -C /tmp/
 cd /tmp/zabbix-2.4.6
 # 安装
 ./configure --prefix=/opt/zabbix-2.4.6 --enable-agent
 make install
-cp -r /opt/zabbix-2.4.6/etc /etc/zabbix
 # 配置
+cp -r /opt/zabbix-2.4.6/etc /etc/zabbix
 wget -q http://10.140.34.28/xyj/config-file/zabbix_agentd.conf -O /etc/zabbix/zabbix_agentd.conf
 wget -q http://10.140.34.28/xyj/config-file/userparameter_mysql.conf -O /etc/zabbix/zabbix_agentd.d/userparameter_mysql.conf
 wget -r -np -q http://10.140.34.28/xyj/monitor/ -P /monitor/
@@ -153,7 +153,7 @@ mkdir -p /etc/zabbix/zabbix_agentd.d && chown zabbix:zabbix /etc/zabbix/zabbix_a
 mkdir -p /var/log/zabbix && chown zabbix:zabbix /var/log/zabbix
 mkdir -p /var/run/zabbix && chown zabbix:zabbix /var/run/zabbix
 # 启动
-zabbix_agentd -c /etc/zabbix/zabbix_agentd.conf
+cd /opt/zabbix-2.4.6/sbin && ./zabbix_agentd -c /etc/zabbix/zabbix_agentd.conf
 # 清理
 rm -rf /tmp/zabbix*
 
@@ -174,7 +174,7 @@ rm -rf /tmp/zabbix*
 #echo "rs.slaveOk();" > /root/.mongorc.js
 #wget -q http://10.140.34.28/xyj/config-file/mongod.conf -O /etc/mongod.conf
 ## 启动
-#mongod --config /etc/mongod.conf
+#cd /opt/mongodb/bin && ./mongod --config /etc/mongod.conf
 ## 清理
 #rm -rf /tmp/mongodb-3.0.6.tgz
 
