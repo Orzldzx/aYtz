@@ -85,37 +85,37 @@ wget -q http://ks.cfgximi.com/motd.tail -O /etc/motd.tail
 
 _print 安装必要软件
 
-apt-get update
-apt-get install -y -qq htop
-apt-get install -y -qq iotop
-apt-get install -y -qq nload
-apt-get install -y -qq bmon
-apt-get install -y -qq vim
-apt-get install -y -qq gdb
-apt-get install -y -qq unzip
-apt-get install -y -qq screen
-apt-get install -y -qq lrzsz
-apt-get install -y -qq liblua5.1-dev
-apt-get install -y -qq liblua5.1-curl0
-apt-get install -y -qq libssl-dev
-apt-get install -y -qq apt-show-versions
-apt-get install -y -qq git
-apt-get install -y -qq curl
-apt-get install -y -qq dos2unix
-apt-get install -y -qq liblua5.1-0-dev
-apt-get install -y -qq gcc
-apt-get install -y -qq g++
-apt-get install -y -qq make
-apt-get install -y -qq subversion
-apt-get install -y -qq zlib1g-dev
-apt-get install -y -qq libssl-dev
-apt-get install -y -qq openssl
-apt-get install -y -qq tree
-apt-get install -y -qq iftop
-apt-get install -y -qq bc
-apt-get install -y -qq acl
-apt-get install -y -qq sysstat
-apt-get upgrade -y -qq glibc > /dev/null
+apt-get update >/dev/null
+apt-get install -qq -y htop
+apt-get install -qq -y iotop
+apt-get install -qq -y nload
+apt-get install -qq -y bmon
+apt-get install -qq -y vim
+apt-get install -qq -y gdb
+apt-get install -qq -y unzip
+apt-get install -qq -y screen
+apt-get install -qq -y lrzsz
+apt-get install -qq -y liblua5.1-dev
+apt-get install -qq -y liblua5.1-curl0
+apt-get install -qq -y libssl-dev
+apt-get install -qq -y apt-show-versions
+apt-get install -qq -y git
+apt-get install -qq -y curl
+apt-get install -qq -y dos2unix
+apt-get install -qq -y liblua5.1-0-dev
+apt-get install -qq -y gcc
+apt-get install -qq -y g++
+apt-get install -qq -y make
+apt-get install -qq -y subversion
+apt-get install -qq -y zlib1g-dev
+apt-get install -qq -y libssl-dev
+apt-get install -qq -y openssl
+apt-get install -qq -y tree
+apt-get install -qq -y iftop
+apt-get install -qq -y bc
+apt-get install -qq -y acl
+apt-get install -qq -y sysstat
+apt-get upgrade -qq -y glibc >/dev/null
 
 # git clone git://github.com/kongjian/tsar.git          #使用sysstat
 # cd tsar/
@@ -131,58 +131,68 @@ pkill rsync && /usr/bin/rsync --daemon
 
 # 安装zabbix-agent
 _print 安装配置zabbix-agent
-while [ ! -f /etc/zabbix/zabbix_agentd.conf ]
-do
-    sleep 5
-   # wget -q http://ks.cfgximi.com/zabbix-release_2.4-1+trusty_all.deb -P /tmp/
-    wget -q http://repo.zabbix.com/zabbix/2.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_2.0-1lucid_all.deb -O /tmp/zabbix.deb
-   # dpkg -i zabbix-release_2.4-1+trusty_all.deb
-    dpkg -i /tmp/zabbix.deb
-    apt-get -qq update
-    apt-get install -y -qq zabbix-agent
-done
+# 下载
+groupadd zabbix && useradd -g zabbix zabbix -s /bin/false
+wget -q http://10.140.34.28/xyj/app-file/zabbix/zabbix-2.4.6.tar.gz -P /tmp/
+tar xf /tmp/zabbix-2.4.6.tar.gz
+cd /tmp/zabbix-2.4.6
+# 安装
+./configure --prefix=/opt/zabbix-2.4.6 --enable-agent
+make install
+cp -r /opt/zabbix-2.4.6/etc /etc/zabbix
+# 配置
 wget -q http://10.140.34.28/xyj/config-file/zabbix_agentd.conf -O /etc/zabbix/zabbix_agentd.conf
 wget -q http://10.140.34.28/xyj/config-file/userparameter_mysql.conf -O /etc/zabbix/zabbix_agentd.d/userparameter_mysql.conf
-#wget -r -np -nd -q http://10.140.34.28/xyj/monitor/ -P /monitor/
 wget -r -np -q http://10.140.34.28/xyj/monitor/ -P /monitor/
-find . -name "index*" -exec rm -f {} \;
+find /monitor -name "index*" -exec rm -f {} \;
 chmod -R +x /monitor
 mv /monitor/10.140.34.28/xyj/monitor/* /monitor
 rm -rf /monitor/10.140.34.28
-service zabbix-agent restart
+echo 'PATH=${PATH}:/opt/zabbix-2.4.6/sbin' >> /root/.bashrc
+mkdir -p /etc/zabbix/zabbix_agentd.d && chown zabbix:zabbix /etc/zabbix/zabbix_agentd.d
+mkdir -p /var/log/zabbix && chown zabbix:zabbix /var/log/zabbix
+mkdir -p /var/run/zabbix && chown zabbix:zabbix /var/run/zabbix
+# 启动
+zabbix_agentd -c /etc/zabbix/zabbix_agentd.conf
+# 清理
+rm -rf /tmp/zabbix*
 
 #----------------------------------------------------------------------
 
 ## >>>>>>>>>>>>>>>>>>>>>>>>> mongo3.0.6 <<<<<<<<<<<<<<<<<<<<<<<<<
 #_print 安装配置mongo-3.0.6
-##  准备
+## 准备
 #mkdir -p /data/mongodb
 #mkdir -p /var/log/mongodb
-##  下载
-#wget http://10.140.34.28/xyj/app-file/mongodb-3.0.6.tgz -P /tmp/
+## 下载
+#wget -q http://10.140.34.28/xyj/app-file/mongodb-3.0.6.tgz -P /tmp/
 #tar xf /tmp/mongodb-3.0.6.tgz -C /tmp/
-##  安装
+## 安装
 #mv /tmp/mongodb-linux-x86_64-ubuntu1204-3.0.6 /opt/mongodb
 #echo 'export PATH=/opt/mongodb/bin:$PATH' >> /root/.bashrc
-##  初始化
+## 初始化
 #echo "rs.slaveOk();" > /root/.mongorc.js
-#wget http://10.140.34.28/xyj/config-file/mongod.conf -O /etc/mongod.conf
+#wget -q http://10.140.34.28/xyj/config-file/mongod.conf -O /etc/mongod.conf
+## 启动
+#mongod --config /etc/mongod.conf
+## 清理
 #rm -rf /tmp/mongodb-3.0.6.tgz
 
 
 ## >>>>>>>>>>>>>>>>>>>>>>>>> redis3.0.4 <<<<<<<<<<<<<<<<<<<<<<<<<
 #_print 安装配置redis-3.0.4
-##  准备/下载
+## 准备/下载
 #ln -s /usr/lib/insserv/insserv /sbin/insserv
 #cd /tmp
 #wget -q http://10.140.34.28/redis-3.0.4.tar.gz -P /tmp/
-##  安装
+## 安装
 #tar xf /tmp/redis-3.0.4.tar.gz -C /opt/
 #cd /opt/redis-3.0.4/src
 #make && make install
 #cd /opt/redis-3.0.4/utils
-##  初始化
+## 初始化
 #sh install_server.sh
+## 清理
 #rm -rf /tmp/redis-3.0.4.tar.gz
 
 
@@ -267,15 +277,6 @@ echo  'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUOHXuGRx3Bf0/CVRQeo4cRtszPWwcgKKEc
 #----------------------------------------------------------------------
 
 _print 配置全局环境变量
-
-# history record
-#/bin/cp /root/.bash_history /tmp/oldhistory
-
-# 实用别名
-#alias ..='cd ..'
-#alias ...='cd ../..'
-#alias ....='cd ../../..'
-#mkcd(){ mkdir -p \$1 ; cd \$1 ; }
 
 wget -q http://120.92.226.38/xyj/Initialize/profile -O /etc/profile
 
