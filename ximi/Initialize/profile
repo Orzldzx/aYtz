@@ -1,5 +1,5 @@
 # 1un
-# 2015-10-29
+# 2015-11-06
 # 作为用户环境变量被初始化脚本调用
 
 #------------------------------------------------------
@@ -60,7 +60,7 @@ mkcd(){ mkdir -p $1 ; cd $1 ; }
 
 #------------------------------------------------------
 
-curl members.3322.org/dyndns/getip > /etc/wan
+curl members.3322.org/dyndns/getip > /etc/wan 2> /dev/null
 LanIp=$(ip addr show eth0|awk '/inet / {print $2}')
 
 if [ $(id -u) != "0" ]; then
