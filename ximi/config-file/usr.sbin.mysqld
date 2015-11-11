@@ -48,9 +48,6 @@
   /var/log/mysql/** rw,
 
 # 
-  /data/mysql/db/ r,
-  /data/mysql/db/** rwk,
-
-  /data/mysql/binlog/ r,
-  /data/mysql/binlog/** rw,
+  /data/mysql/ r,
+  /data/mysql/** rwk,
 }
