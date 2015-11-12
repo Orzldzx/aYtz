@@ -86,36 +86,36 @@ wget -q http://ks.cfgximi.com/motd.tail -O /etc/motd.tail
 _print 安装必要软件
 
 apt-get update >/dev/null
-apt-get install -qq -y htop
-apt-get install -qq -y iotop
-apt-get install -qq -y nload
-apt-get install -qq -y bmon
-apt-get install -qq -y vim
-apt-get install -qq -y gdb
-apt-get install -qq -y unzip
-apt-get install -qq -y screen
-apt-get install -qq -y lrzsz
-apt-get install -qq -y liblua5.1-dev
-apt-get install -qq -y liblua5.1-curl0
-apt-get install -qq -y libssl-dev
-apt-get install -qq -y apt-show-versions
-apt-get install -qq -y git
-apt-get install -qq -y curl
-apt-get install -qq -y dos2unix
-apt-get install -qq -y liblua5.1-0-dev
-apt-get install -qq -y gcc
-apt-get install -qq -y g++
-apt-get install -qq -y make
-apt-get install -qq -y subversion
-apt-get install -qq -y zlib1g-dev
-apt-get install -qq -y libssl-dev
-apt-get install -qq -y openssl
-apt-get install -qq -y tree
-apt-get install -qq -y iftop
-apt-get install -qq -y bc
-apt-get install -qq -y acl
-apt-get install -qq -y sysstat
-apt-get upgrade -qq -y glibc >/dev/null
+apt-get install -y htop >/dev/null
+apt-get install -y iotop >/dev/null
+apt-get install -y nload >/dev/null
+apt-get install -y bmon >/dev/null
+apt-get install -y vim >/dev/null
+apt-get install -y gdb >/dev/null
+apt-get install -y unzip >/dev/null
+apt-get install -y screen >/dev/null
+apt-get install -y lrzsz >/dev/null
+apt-get install -y liblua5.1-dev >/dev/null
+apt-get install -y liblua5.1-curl0 >/dev/null
+apt-get install -y libssl-dev >/dev/null
+apt-get install -y apt-show-versions >/dev/null
+apt-get install -y git >/dev/null
+apt-get install -y curl >/dev/null
+apt-get install -y dos2unix >/dev/null
+apt-get install -y liblua5.1-0-dev >/dev/null
+apt-get install -y gcc >/dev/null
+apt-get install -y g++ >/dev/null
+apt-get install -y make >/dev/null
+apt-get install -y subversion >/dev/null
+apt-get install -y zlib1g-dev >/dev/null
+apt-get install -y libssl-dev >/dev/null
+apt-get install -y openssl >/dev/null
+apt-get install -y tree >/dev/null
+apt-get install -y iftop >/dev/null
+apt-get install -y bc >/dev/null
+apt-get install -y acl >/dev/null
+apt-get install -y sysstat >/dev/null
+apt-get upgrade -y glibc >/dev/null
 
 # git clone git://github.com/kongjian/tsar.git          #使用sysstat
 # cd tsar/
