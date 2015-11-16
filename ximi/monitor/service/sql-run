@@ -10,7 +10,7 @@ MyUser=view
 MyPass=0528ximi2014
 
 DB=()
-[ ! -n $(which redis-server|wc -l) ] && DB[0]=redis
+[ $(which redis-server|wc -l) -eq 1 ] && DB[0]=redis
 [ $(which mongod|wc -l) -eq 1 ] && DB[1]=mongo
 [ $(which mysqld|wc -l) -eq 1 ] && DB[2]=mysql
 
