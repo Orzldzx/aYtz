@@ -1,6 +1,6 @@
 #!/bin/bash
 # 1un
-# 2015-10-26
+# 2015-11-17
 # 每小时备份redis数据库
 
 date=$(date +%F)
@@ -28,7 +28,7 @@ do
     else
         echo -e "${now_time}\t$(hostname)\tredis\t backup\t+failed!+" >> ../redis-server.log
     fi
-    [ -d $his ] && rm -rf $(date -d '-3 day' +%F)
+    rm -rf $(date -d '-3 day' +%F)
     sleep 10
 done
 
