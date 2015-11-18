@@ -184,7 +184,7 @@ rm -rf /tmp/zabbix*
 ## 准备/下载
 #ln -s /usr/lib/insserv/insserv /sbin/insserv
 #cd /tmp
-#wget -q http://10.140.34.28/redis-3.0.4.tar.gz -P /tmp/
+#wget -q http://10.140.34.28/xyj/app-file/redis-3.0.4.tar.gz -P /tmp/
 ## 安装
 #tar xf /tmp/redis-3.0.4.tar.gz -C /opt/
 #cd /opt/redis-3.0.4/src
@@ -220,6 +220,33 @@ rm -rf /tmp/zabbix*
 #rm -rf /tmp/mysql* /tmp/index* /tmp/libaio1*
 
 #----------------------------------------------------------------------
+
+## >>>>>>>>>>>>>>>>>>>>>>>>> jdk 1.7.0_80 <<<<<<<<<<<<<<<<<<<<<<<<<
+#_print 安装配置JDK-1.7.0_80
+## 下载
+#wget -q http://10.140.34.28/xyj/app-file/jdk.tar.bz2 -P /tmp/
+## 安装
+#tar xf /tmp/jdk.tar.bz2 -C /opt/
+## 配置
+#cat << EOF >> /etc/profile
+#
+##------------------------------------------------------
+#
+#
+#PATH=\$PATH:\$HOME/bin
+#
+#export PATH
+#
+#export JAVA_HOME=/opt/jdk1.7.0_80
+#export PATH=\$JAVA_HOME/bin:\$PATH
+#export CLASSPATH=.:\$JAVA_HOME/lib/dt.jar:\$JAVA_HOME/lib/tools.jar
+#
+#EOF
+
+
+#----------------------------------------------------------------------
+
+
 
 _print 配置防火墙
 
