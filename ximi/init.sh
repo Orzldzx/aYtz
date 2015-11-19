@@ -289,14 +289,13 @@ echo "nameserver 10.140.34.28" >/etc/resolv.conf
 
 _print 配置ssh
 
-wget -q http://10.140.34.28/sshd-for-key.sh -O /tmp/sshd-for-key.sh
+wget -q http://10.140.34.28/xyj/Initialize/sshd-for-key.sh -O /tmp/sshd-for-key.sh
 /bin/bash /tmp/sshd-for-key.sh
 sed -i '/ AAAAB3NzaC1yc2EAAAABIwAAAQEAyCNnRVphssiEsQ/d' /root/.ssh/authorized_keys
 sed -i '/ AAAAB3NzaC1yc2EAAAADAQABAAABAQCoF72GzH/d' /root/.ssh/authorized_keys
 
 # 管理员key
 echo 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAnUcYtcyWpzWaIW5clD/LqjcprYl0AkQPnioEpm3J9NTT6UOUbR/FPnXBRj+2SdKcydNv/ryo10Z90W6isiS2JlkpyuFjVJp2SkGFMh8gbONaQ3w3XYxiOX6xk8lxyPx5BGydrKa4NwNuset0KmZWDUo8LoyHacNLbohtd4bKc5LvqQGfpj/TcRh+kW70ssOBPlNyD3JV2hPcJ/dqMJyZY1Vf3KM9IyBG4ko39hKXS/RDfp6e1PWI+Ky0j7mMOow4rsu24Jz35PcKCPV5uIFfIfB1MfdwD3pzEGlcXFzX63Eg+VOuqujAuPBqSXROvYUyCK1QAG+/XwiSdpoSzKVhPw== root@vm10-140-34-28.ksc.com' >> /root/.ssh/authorized_keys
-#echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCoF72GzH/qxyIPvbkKpiNQz6ZDNqIpLYeiSbfq+/dvlwuw8bFa8DYYLc0hBh2lx1dDkR23TTfeT1T0CwqY6QiZB7BaF7CuEs57IfFq8g+leRhxOCVDtI1czMfG3wXLKOOQ3MhZiNsmNvEIE7OOYgfxuBF4g4igKQKBXil3PmS1dT4YnDSFeXbonOAuSTeq+A+l/tW/Lg/LqhFu1rKpPQh9uedH6Nwpof4HoYRCFeCz6EZkaWnqRhL8qEXqovbp/eS3jmLNOSuoXtPpc5CQCOO6KfeTCLlppUL3N6f1Yum6GMrycnFd/PL7Kq0Y7qVpZ4IF3jN+B4dNIY3eZRnjmg/3 root@market' >> /root/.ssh/authorized_keys
 
 # 只读用户key
 echo  'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUOHXuGRx3Bf0/CVRQeo4cRtszPWwcgKKEcWbvOJo1Oth2C0Cy5lj61SP6NPTgoncyirFf4Vjb1ghn5tVOEOOXsNbiBJyiVGoOQXi8ZLDQvGWoUduKO8nOqPxUPLLX93kFiWBaSNGbBNtdkSg0dxUEMkvlEuTS2SxsQ5TpRIA9xnhbeRz8Lz/vMuWcaE5W1L/JRTcaEhN3FzEtsp/fb42WdlZW4+6k3IY8GpLMue9DCvE/Bmcr6nudLcdAuAZ7cG4HqPHHgtoem3SN8YHQpFj9pVX3bhNRBvYGB+QFmvhNJVieK+me+wkYbhxZ71buGzbHN6LZVLmefbYdtVwD9pYV root@kickseed' > /home/ximi/.ssh/authorized_keys
