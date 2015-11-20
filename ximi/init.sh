@@ -126,7 +126,8 @@ apt-get upgrade -y glibc >/dev/null
 _print 安装配置rsync
 apt-get install -y rsync
 wget -q http://10.140.34.28/xyj/config-file/rsyncd.conf -O /etc/rsyncd.conf
-pkill rsync && /usr/bin/rsync --daemon
+pkill rsync
+/usr/bin/rsync --daemon
 
 
 # 安装zabbix-agent
