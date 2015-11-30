@@ -39,7 +39,7 @@ elif [[ "$1" = "check" ]]; then	#检查备份是否成功
 	fi
 
 else	#完整备份
-	time=$(date +"%m%d_%H")
+	time=$(date +"%m%d_05")
 	mkdir -p /bakcfg/svndata."$time"_bak
 	rsync --port 1888 --bwlimit=20000 --delete --exclude=log --exclude=core -avz /svndata/ /bakcfg/svndata."$time"_bak
 	rm -rf /bakcfg/svndata.$(date -d '-6 day' +%m%d)_*
