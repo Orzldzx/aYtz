@@ -35,7 +35,7 @@ install_mod(){
     do
         testmod=`lsmod | grep "^${mod} " | awk '{print $1}'`
         if [ "$testmod" == "" ]; then
-              modprobe $mod
+            modprobe $mod
         fi
     done
 
@@ -79,7 +79,7 @@ start_to_all(){
     # NAT表
     # IP=ip地址, PORT=端口, D-IP=目的地址, D-PORT=目的端口 S-IP=源ip地址, L-IP=本地出口ip地址(可能是内网地址也可能是外网地址)
     ## 转发端口
-#    iptables -t nat -A PREROUTING  -p tcp -m tcp --dport D-PORT -j REDIRECT --to-ports D-PORT
+#    iptables -t nat -A PREROUTING -p tcp -m tcp --dport D-PORT -j REDIRECT --to-ports D-PORT
 
     ## 转发ip && 端口
 #    iptables -t nat -A PREROUTING -p tcp --dport D-PORT -j DNAT --to-destination D-IP:D-PORT
@@ -122,11 +122,11 @@ print(){
 
 # arg="start"
 if [ $# -ne 0 ]; then
-    if  [ "$1" = "start" -o  "$1" = "status" -o "$1" = "stop" -o "$1" = "restart" -o "$1" = "reload" -o "$1" = "enforce_restart" ]; then
+    if [ "$1" = "start" -o "$1" = "status" -o "$1" = "stop" -o "$1" = "restart" -o "$1" = "reload"]; then
         arg="$1"
     fi
 else
-    echo "Please enter: <start>  or <stop>; <restart>  or <reload> ; <status> ; and warning args!--<enforce_restart>"
+    echo "Please enter: script [ start | stop | restart | reload | status ]"
     exit
 fi
 
@@ -142,13 +142,13 @@ case $arg in
         stop_to_all
         print red stop Success
     ;;
-    restart|reload)
+    reload)
         backup
         clear_to_all
         start_to_all
         print yellow reload Success
     ;;
-    enforce_restart)
+    restart)
         backup
         install_mod
         stop_to_all
