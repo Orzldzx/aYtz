@@ -1,6 +1,6 @@
 #!/bin/bash
 # 1un
-# 2015-10-26
+# 2015-12-09
 # 检测数据库备份
 
 #时间
@@ -30,14 +30,16 @@ check_log(){	#对比大小
     if [[ "${1}" = "mysqld" || "${1}" = "mongod" ]]; then
         new_size=$(grep "^${date}" ${logfile}|cut -d'+' -f2)
 	new_size=${new_size:=0}
-        new_size=${new_size/failed/0}
+#        new_size=${new_size/failed/0}
+        [[ $new_size = "failed" ]] && { echo 7; exit; }
         old_size=$(grep "^${date_old}" ${logfile}|cut -d'+' -f2)
         old_size=${old_size:=1}
         old_size=${old_size/failed/1}
     elif [[ "${1}" = "redis-server" ]]; then
         new_size=$(grep "${date} ${hour}" ${logfile}|cut -d'+' -f2)
         new_size=${new_size:=0}
-        new_size=${new_size/failed\!/0}
+#        new_size=${new_size/failed\!/0}
+        [[ $new_size = "failed" ]] && { echo 7; exit; }
         old_size=$(grep "${date} ${hour_old}" ${logfile}|cut -d'+' -f2)
         old_size=${old_size:=1}
         old_size=${old_size/failed\!/1}
