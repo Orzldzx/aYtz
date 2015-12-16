@@ -62,6 +62,7 @@ ln -s /data/svndata /svndata
 ln -s /data /alidata1
 mkdir /monitor
 mkdir /fw
+mkdir -p /etc/zabbix/zabbix_agentd.d
 mkdir -p /data/corefile
 [ ! -d /root/.ssh/ ] && mkdir -p /root/.ssh
 # 只读用户家目录
@@ -141,7 +142,7 @@ cd /tmp/zabbix-2.4.6
 ./configure --prefix=/opt/zabbix-2.4.6 --enable-agent
 make install
 # 配置
-cp -r /opt/zabbix-2.4.6/etc /etc/zabbix
+cp -r /opt/zabbix-2.4.6/etc/* /etc/zabbix/
 wget -q http://10.140.34.28/xyj/config-file/zabbix_agentd.conf -O /etc/zabbix/zabbix_agentd.conf
 wget -q http://10.140.34.28/xyj/config-file/userparameter_mysql.conf -O /etc/zabbix/zabbix_agentd.d/userparameter_mysql.conf
 wget -r -np -q http://10.140.34.28/xyj/monitor/ -P /monitor/
@@ -295,11 +296,14 @@ wget -q http://10.140.34.28/xyj/Initialize/sshd-for-key.sh -O /tmp/sshd-for-key.
 sed -i '/ AAAAB3NzaC1yc2EAAAABIwAAAQEAyCNnRVphssiEsQ/d' /root/.ssh/authorized_keys
 sed -i '/ AAAAB3NzaC1yc2EAAAADAQABAAABAQCoF72GzH/d' /root/.ssh/authorized_keys
 
-# 管理员key
+# 管理员key (跳板机)
 echo 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAnUcYtcyWpzWaIW5clD/LqjcprYl0AkQPnioEpm3J9NTT6UOUbR/FPnXBRj+2SdKcydNv/ryo10Z90W6isiS2JlkpyuFjVJp2SkGFMh8gbONaQ3w3XYxiOX6xk8lxyPx5BGydrKa4NwNuset0KmZWDUo8LoyHacNLbohtd4bKc5LvqQGfpj/TcRh+kW70ssOBPlNyD3JV2hPcJ/dqMJyZY1Vf3KM9IyBG4ko39hKXS/RDfp6e1PWI+Ky0j7mMOow4rsu24Jz35PcKCPV5uIFfIfB1MfdwD3pzEGlcXFzX63Eg+VOuqujAuPBqSXROvYUyCK1QAG+/XwiSdpoSzKVhPw== root@vm10-140-34-28.ksc.com' >> /root/.ssh/authorized_keys
 
 # 只读用户key
 echo  'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUOHXuGRx3Bf0/CVRQeo4cRtszPWwcgKKEcWbvOJo1Oth2C0Cy5lj61SP6NPTgoncyirFf4Vjb1ghn5tVOEOOXsNbiBJyiVGoOQXi8ZLDQvGWoUduKO8nOqPxUPLLX93kFiWBaSNGbBNtdkSg0dxUEMkvlEuTS2SxsQ5TpRIA9xnhbeRz8Lz/vMuWcaE5W1L/JRTcaEhN3FzEtsp/fb42WdlZW4+6k3IY8GpLMue9DCvE/Bmcr6nudLcdAuAZ7cG4HqPHHgtoem3SN8YHQpFj9pVX3bhNRBvYGB+QFmvhNJVieK+me+wkYbhxZ71buGzbHN6LZVLmefbYdtVwD9pYV root@kickseed' > /home/ximi/.ssh/authorized_keys
+
+# auto-push
+echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWlA7AnRLWMWc1Hiz870DpkH43hzFFuspVXiLDwYfpH2kRR7BNQKFbD7EhCKC5sORGrhTSqw2/bxRjR0WdHLTvB6e+7cSBoQJD/nq9j3Ht2g22l+xvkJ8nufHZI8aB+APSdkIproZfi9eTKC6tbRqQiNEn8V2Pjf0SEEZIX6hJjOv36qbPVjqU/UE05AzvWJ5X6ppgyrt6PM3O6gzOuyhUqDNqk/jgc38t4Hhr1THCcA1MmlxCyZ4REsUhUf/Q83T75m243i72nXkaWBnWUCHjlpuLlEiSWJ1t4V27yJ+XiuAF89hBoFybMKYeTOYNlapo8QGZyyYgqapBle/Ic9w5 root@rundeck' >> /root/.ssh/authorized_keys
 
 #----------------------------------------------------------------------
 

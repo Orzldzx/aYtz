@@ -6,7 +6,7 @@
 
 # 获取出口ip,需要有其他的在通过IP判断.(Ksyun)
 ip=$(cat /etc/wan)
-SSHPort=$(netstat -tlnp|grep -w tcp|grep sshd|awk -F":| " '{print $17}')
+SSHPort=$(ss -4tnpl|awk '/sshd/ {print $4}'|sed 's/[^0-9]//g')
 JumpServerIp="10.140.34.28"
 
 # 停止防火墙
@@ -122,7 +122,7 @@ print(){
 
 # arg="start"
 if [ $# -ne 0 ]; then
-    if [ "$1" = "start" -o "$1" = "status" -o "$1" = "stop" -o "$1" = "restart" -o "$1" = "reload"]; then
+    if [ "$1" = "start" -o "$1" = "status" -o "$1" = "stop" -o "$1" = "restart" -o "$1" = "reload" ]; then
         arg="$1"
     fi
 else
