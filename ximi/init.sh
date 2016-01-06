@@ -1,6 +1,6 @@
 #!/bin/bash
 # 1un
-# 创建:2015-09-08 修改:2015-10-29
+# 创建:2015-09-08 修改:2016-01-06
 # 初始化脚本
 # 增加zabbix-agent:mysql监控项下发,调整用户环境变量
 
@@ -248,8 +248,6 @@ rm -rf /tmp/zabbix*
 
 #----------------------------------------------------------------------
 
-
-
 _print 配置防火墙
 
 wget -q http://10.140.34.28/xyj/config-file/iptables -O /fw/iptables
@@ -342,11 +340,21 @@ echo 0 > /proc/sys/vm/swappiness
 
 #----------------------------------------------------------------------
 
+_print 优化系统配置
+# 启动时不清除/tmp目录
+sed -i 's/^TMPTIME=0/TMPTIME=-1/' /etc/default/rcS
+
+#----------------------------------------------------------------------
+
 _print 设置时间同步
 sed -i 's/ntpupdate/ntpdate/' /var/spool/cron/crontabs/root
+
+#----------------------------------------------------------------------
 
 _print 清理临时文件
 cd /tmp
 rm -rf automount_data_block.sh sshd-for-key.sh zabbix.deb 6379.conf *.iptables oldhistory redis-3.0.4.tar.gz $0
+
+#----------------------------------------------------------------------
 
 _print 初始化完成

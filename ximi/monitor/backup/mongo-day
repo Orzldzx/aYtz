@@ -18,7 +18,7 @@ do
     [[ ! -d $Bpath ]] && mkdir -p $Bpath
     [[ ! -d $Tpath ]] && mkdir -p $Tpath
     
-    /usr/bin/mongodump --port $port -d $DBNAME -o $Tpath/$DBNAME &> /dev/null
+    /usr/bin/mongodump --port $port -d $DBNAME -o $Tpath &> /dev/null
     
     cd $Tpath
     tar acf $Bpath/${BakName}.tgz $DBNAME
