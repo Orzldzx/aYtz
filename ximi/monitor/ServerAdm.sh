@@ -1,6 +1,6 @@
 #!/bin/bash
 # 1un
-# 2015-10-22
+# 2016-01-28 --update
 # 整合服务启动/停止/重启/重载功能
 
 #变量
@@ -25,16 +25,16 @@ Help(){
 #打印信息
 Print(){
     if [ $? -eq 0 ]; then
-    	if [[ $Ptype -eq 1 ]]; then
-                printf "\033[32m %-100s %-7s succeed ...\033[0m\n" "[ ${1} ]" ${2}
+        if [[ $Ptype -eq 1 ]]; then
+                printf " %-30s %-7s Succeed\n" "[ ${1} ]" ${2}
         elif [[ $Ptype -eq 2 ]]; then
-                printf "\033[33m %-100s running %-12s...\033[0m\n" "[ ${1} ]" ${2}
+                printf " %-30s running %-12s\n" "[ ${1} ]" ${2}
         fi
     else
         if [[ $Ptype -eq 1 ]]; then
-            printf "\033[31m %-100s %-7s failed ...\033[0m\n" "[ ${1} ]" ${2}
+            printf " %-30s %-7s Failed\n" "[ ${1} ]" ${2}
         elif [[ $Ptype -eq 2 ]]; then
-            printf "\033[36m %-100s down    %-12s...\033[0m\n" "[ ${1} ]" ${2}
+            printf " %-30s down    %-12s\n" "[ ${1} ]" ${2}
         fi
     fi
 }
@@ -50,15 +50,19 @@ ClearShm(){
 #启动服务
 Start(){
     local Ptype=1
-    Type=$(echo ${1}|grep tcpsvrd|wc -l)
-    if [[ ${Type} -eq 1 ]]; then
-        cd /svndata/svr/${1}/bin && ./start_tcpsvrd.sh &> /dev/null
+    if [[ $(pgrep ${1}|wc -l) = 1 ]]; then
+        printf " %-30s %-7s\n" "[ ${1} ]" "already running!\n"
     else
-        cd /svndata/svr/${1}/bin && ./${1} &> /dev/null
+        Type=$(echo ${1}|grep tcpsvrd|wc -l)
+        if [[ ${Type} -eq 1 ]]; then
+            cd /svndata/svr/${1}/bin && ./start_tcpsvrd.sh &> /dev/null
+        else
+            cd /svndata/svr/${1}/bin && ./${1} &> /dev/null
+        fi
+        sleep 8
+        pgrep ${1} &> /dev/null
+        Print ${1} start
     fi
-    sleep 8
-    pgrep ${1} &> /dev/null
-    Print ${1} start
 }
 
 #停止服务
@@ -68,8 +72,6 @@ Stop(){
     sleep 0.5
     [[ $(pgrep ${1:0:15}|wc -l) -eq 0 ]] || pkill -9 ${1:0:15}
     Print ${1} stop
-    sleep 0.5
-    ClearShm
 }
 
 #重载服务
@@ -97,7 +99,10 @@ Case(){
         start)
             Start ${2} ;;
         stop)
-            Stop ${2} ;;
+            Stop ${2}
+            sleep 0.5
+            ClearShm
+            ;;
         reload)
             Reload ${2} ;;
         status)
@@ -116,28 +121,36 @@ Case(){
 #main
 if [[ ${2} = "all" ]]; then
     if [[ ${1} = "restart" ]]; then
-	for Ser in $(awk '{print $1}' $Mod)
-	do
-	    Case stop ${Ser}
-	done
-	echo -e "\033[35;05m >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\033[0m"
-	for Ser in $(awk '{print $1}' $Mod)
-	do
-	    Case start ${Ser}
-	done
+        for Ser in $(awk '{print $1}' $Mod); do
+            Case stop ${Ser}
+        done
+        echo -e "   -+-+- "
+        for Ser in $(awk '{print $1}' $Mod); do
+            Case start ${Ser}
+        done
     else
-        for Ser in $(awk '{print $1}' $Mod)
-        do
+        for Ser in $(awk '{print $1}' $Mod); do
             Case ${1} ${Ser}
         done
     fi
 else
     if [[ $(grep ${2} $Mod|wc -l) -ge 1 ]]; then
-        [[ ${1} = "restart" ]] && { Case stop ${2} ; Case start ${2} ; } || Case ${1} ${2}
+        if [[ ${1} = "restart" ]]; then
+            Case stop ${2}
+            Case start ${2}
+        else
+            Case ${1} ${2}
+        fi
     else
-         echo "${2} not found ..."
+         echo " [ ${2} ] not found"
     fi
 fi
 
 # start autorestart
-[[ ${1} = "start" || ${1} = "restart" ]] && [ $(pgrep autorestart|wc -l) -lt 1 ] && { sleep 0.2 ; cd /svndata/svr/autorestart/bin && ./autorestart &> /dev/null ; }
+if [[ ${1} = "start" || ${1} = "restart" ]]; then
+    if [ $(pgrep autorestart|wc -l) -lt 1 ]; then
+        sleep 0.2
+        cd /svndata/svr/autorestart/bin
+        ./autorestart &> /dev/null
+    fi
+fi
