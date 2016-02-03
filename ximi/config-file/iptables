@@ -72,9 +72,18 @@ start_to_all(){
     ## 开放端口
 #    iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport $SSHPort -j ACCEPT
 
+    ## 过滤关键字
+    # iptables -A {INPUT,OUTPUT,FORWARD} -p {tcp,udp} -{s,d} 源地址|目的地址 --{dport,sport} 端口号 -m string --string "/abc/def" -algo {bm,kmp} -j DROP
+    # 设置字符匹配的查询算法,一般默认使用bm算法效果就可以了,另外还可以设置kmp算法.  (bm = Boyer-Moore, kmp = Knuth-Pratt-Morris)
+#    iptables -A OUTPUT --dport 80 -p tcp -m string --string "youku.com" -algo bm -j DROP
+
+### -------------------
+
     ## 允许转发
 #    iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 #    iptables -A FORWARD -s IP/MASK -p tcp --sport PORT -j ACCEPT
+
+### -------------------
 
     # NAT表
     # IP=ip地址, PORT=端口, D-IP=目的地址, D-PORT=目的端口 S-IP=源ip地址, L-IP=本地出口ip地址(可能是内网地址也可能是外网地址)
