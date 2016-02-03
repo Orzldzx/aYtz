@@ -77,8 +77,6 @@ start_to_all(){
     # 设置字符匹配的查询算法,一般默认使用bm算法效果就可以了,另外还可以设置kmp算法.  (bm = Boyer-Moore, kmp = Knuth-Pratt-Morris)
 #    iptables -A OUTPUT --dport 80 -p tcp -m string --string "youku.com" -algo bm -j DROP
 
-### -------------------
-
     ## 允许转发
 #    iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 #    iptables -A FORWARD -s IP/MASK -p tcp --sport PORT -j ACCEPT
