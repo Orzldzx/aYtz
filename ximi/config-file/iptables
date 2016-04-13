@@ -78,8 +78,9 @@ start_to_all(){
 #    iptables -A OUTPUT --dport 80 -p tcp -m string --string "youku.com" -algo bm -j DROP
 
     ## 允许转发
+    # iptables -A FORWARD -s IP/MASK -p tcp --sport PORT -j ACCEPT
 #    iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-#    iptables -A FORWARD -s IP/MASK -p tcp --sport PORT -j ACCEPT
+
 
 ### -------------------
 
@@ -90,7 +91,7 @@ start_to_all(){
 
     ## 转发ip && 端口
 #    iptables -t nat -A PREROUTING -p tcp --dport D-PORT -j DNAT --to-destination D-IP:D-PORT
-#    iptables -t nat -A POSTROUTING -d D-PORT -j SNAT --to L-IP
+#    iptables -t nat -A POSTROUTING -d D-IP -j SNAT --to L-IP
 
     ## 通过设备转发端口
 #    iptables -t nat -A POSTROUTING -o eth0 -p tcp -j SNAT --to-source L-IP

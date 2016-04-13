@@ -51,7 +51,7 @@ ClearShm(){
 Start(){
     local Ptype=1
     if [[ $(pgrep ${1}|wc -l) = 1 ]]; then
-        printf " %-30s %-7s\n" "[ ${1} ]" "already running!\n"
+        printf " %-30s %-7s\n" "[ ${1} ]" "already running!"
     else
         Type=$(echo ${1}|grep tcpsvrd|wc -l)
         if [[ ${Type} -eq 1 ]]; then

@@ -1,6 +1,6 @@
 #!/bin/bash
 # 1un
-# 2015-10-20
+# 2016-02-01 -update
 # zabbix自动发现服务项,监控服务各项状态
 
 [ ! -s /svndata/svr/mod.txt ] && echo 1 && exit
@@ -47,11 +47,15 @@ GetValue(){
         fi
         ETIMEUsage=$(echo $ETIME|cut -d: -f1|awk -F'-' '{print $1"*24+"$2}'|bc)
         echo $ETIMEUsage
+	}
+    GetPsCpu(){
+        CPUUsage=$(ps -o pcpu -p $1|grep -v CPU)
+	echo $CPUUsage
         }
 
     case $2 in
     cpu)
-        cpu_usage=`ps  -p $PID -o pcpu |grep -v CPU | awk '{print $1}'`
+        cpu_usage=`GetPsCpu $PID`
         echo $cpu_usage
         ;;
     mem)
