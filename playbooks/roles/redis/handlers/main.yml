@@ -1,0 +1,6 @@
+---
+- name: start redis-server
+  shell: /opt/redis/src/redis-server /etc/redis/redis.cnf
+
+- name: del redis.tgz
+  shell: rm -rf /opt/redis-3.0.4.tar.gz

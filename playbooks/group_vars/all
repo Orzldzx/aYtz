@@ -1,0 +1,21 @@
+---
+# 通用
+ansible_ssh_user: root
+ansible_ssh_pass: "123456"
+ansible_ssh_port: 22
+ansible_sudo_pass: 'ximi'
+
+# 新建用户
+jumpuser: jumpser
+rootuser: root
+
+# 初始化磁盘
+disk: /dev/xvdb
+partition: /dev/xvdb1
+mountDir: /data
+
+# zabbix
+zabbixServer: 10.140.34.28
+
+# 主机名
+#hostName: inithost

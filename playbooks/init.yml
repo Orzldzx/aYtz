@@ -1,0 +1,12 @@
+---
+
+- hosts: gameserver
+  remote_user: ximi
+#  gather_facts: False
+  sudo: yes
+  roles:
+  - common
+  - zabbix
+  - mysql
+  - redis
+  - mongo

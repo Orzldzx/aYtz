@@ -1,0 +1,3 @@
+---
+ - include: install_redis_master.yml  
+# - include: install_redis_slaver.yml

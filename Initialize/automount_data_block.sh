@@ -9,12 +9,12 @@
 # 此脚本用于在金山云linux云主机上初始化数据盘，为了往后数据盘无损数据扩展，这里使用了LVM。
 
 #====以下变量可以根据实际需要自行修改==========
-BK="/dev/vdc"				# 数据盘或数据分区名称，支持多块盘或分区，须以空格分隔（如BK="/dev/vdc /dev/vdd"）
-VG=vg1					# VG名称
-LV=lv_data				# LV名称
-MP=/data				# 挂载点路径
-FS_TYPE=ext4				# 文件系统
-MO=defaults				# 挂载参数
+BK="/dev/vdc"           # 数据盘或数据分区名称，支持多块盘或分区，须以空格分隔（如BK="/dev/vdc /dev/vdd"）
+VG=vg1                  # VG名称
+LV=lv_data              # LV名称
+MP=/data                # 挂载点路径
+FS_TYPE=ext4            # 文件系统
+MO=defaults             # 挂载参数
 #====以上变量可以根据实际需要自行修改==========
 
 

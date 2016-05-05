@@ -1,0 +1,36 @@
+---
+
+- name: link svndata
+  file: src=/data/svndata dest=/svndata state=link
+
+- name: link data
+  file: src=/data dest=/alidata1 state=link
+
+- name: update configure rsync
+  copy: src=../file/rsyncd.conf dest=/etc/rsyncd.conf 
+        owner=root group=root mode=0644 backup=yes
+
+- name: start rsync --daemon
+  shell: rsync --daemon
+
+- name: start zabbix client
+  shell: chdir=/opt/zabbix-2.4.6/sbin ./zabbix_agentd -c /etc/zabbix/zabbix_agentd.conf
+
+- name: change control-alt-delete.conf
+  shell: sed -i "s/^exec/#exec/g" /etc/init/control-alt-delete.conf
+
+- name: change core_pattern
+  shell: echo "/data/corefile/core-%e-%p-%t" > /proc/sys/kernel/core_pattern
+
+- name: add swap
+  raw: /bin/bash /tmp/swap.sh
+
+- name: sysctl.conf start
+  shell: /sbin/sysctl -p
+
+- name: start iptables
+  shell: /bin/bash /fw/iptables start
+
+- name: java evn
+  shell: tar xf /opt/jdk.tar.bz2 && ehco "export JAVA_HOME=/opt/jdk1.7.0_80" >> /etc/profile && echo "export PATH=\$JAVA_HOME/bin:\$PATH" >>/etc/profile
+       && echo "export CLASSPATH=.:\$JAVA_HOME/lib/dt.jar:\$JAVA_HOME/lib/tools.jar" >>/etc/profile

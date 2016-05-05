@@ -1,0 +1,5 @@
+---
+- name: start mongodb
+  shell: /opt/mongodb/bin/mongod -f /etc/mongodb/mongod.conf 
+- name: del mongo.tgz
+  shell: rm -rf /opt/mongodb-3.0.6.tgz

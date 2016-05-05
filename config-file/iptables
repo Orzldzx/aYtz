@@ -134,7 +134,7 @@ if [ $# -ne 0 ]; then
         arg="$1"
     fi
 else
-    echo "Please enter: script [ start | stop | restart | reload | status ]"
+    echo "Please enter: script [ start | stop | restart | reload | status [table]]"
     exit
 fi
 
@@ -164,7 +164,7 @@ case $arg in
         print yellow enforce_restart Success
     ;;
     status)
-        _status
+        _status $2
         print blue status Success
         ;;
 esac

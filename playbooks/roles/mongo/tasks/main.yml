@@ -1,0 +1,6 @@
+---
+#- name: mongo_master
+- include: install_mongo_master.yml
+
+#- name: mongo_slave
+#- include: install_mongo_slaver.yml

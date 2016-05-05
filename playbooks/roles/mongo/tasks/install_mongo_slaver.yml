@@ -1,0 +1,37 @@
+---
+- name: push package
+#  tags: package
+  copy: src=../file/mongodb-3.0.6.tgz dest=/opt owner=root group=root
+  #copy: src=../file/mongodb2-6.tgz des=/opt
+- name: useradd mongodb zabbix
+  shell: useradd mongodb && useradd zabbix
+- name: apt acl
+  apt: name={{ item }} state=present
+  with_items:
+  - acl
+- name: Extract package
+  shell: tar xf /opt/mongodb-3.0.6.tgz -C /opt && mv /opt/mongodb-linux-x86_64-ubuntu1204-3.0.6 /opt/mongodb
+- name: env mongo
+  shell: echo "PATH=$PATH:/opt/mongodb/bin" >> /etc/profile 
+- name: env mongo1
+  shell: echo "rs.slaveOk();" >> /root/.mongorc.js 
+- name: env mongo2
+  shell: . /etc/profile
+- name: change Privilege
+  shell: path=/opt/mongodb/bin/ owner=root group=root mode=754
+- name: mongo acl
+  acl: name=/opt/mongodb/bin/mongo entity=zabbix permissions=rx
+- name: Create Mongo Datadir
+  file: path={{ item }} state=directory
+  with_items:
+  - "{{ mongodb_log_dir }}"
+  - "{{ mongo_datadir }}/{{ mongo_master_port }}"
+  - "{{ mongo_config_dir }}"
+  - "{{ mongo_backup_dir }}/{{ mongo_master_port }}"
+  register: result
+- name: push mongo configure
+  template: src=mongodslaver.conf.j2 dest=/etc/mongodb/mongod.conf
+  when: result|success
+  notify:
+  - start mongodb
+  - del mongo.tgz
