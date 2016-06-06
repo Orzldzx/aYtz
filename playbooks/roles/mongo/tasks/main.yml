@@ -1,6 +1,4 @@
 ---
-#- name: mongo_master
-- include: install_mongo_master.yml
 
-#- name: mongo_slave
-#- include: install_mongo_slaver.yml
+- include: install_mongodb.yml
+  when: hostType == "mongo_master" or hostType == "mongo_slave"

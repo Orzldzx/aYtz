@@ -1,11 +1,7 @@
 ---
 
-redis_master_port:             6379
-redis_slave_port:              6379
 redis_log_dir:                 /var/log/redis
 redis_data_dir:                /data/redis
 redis_back_dir:                /data/redis_back
 redis_config_dir:              /etc/redis
-#redis_bind_address:            0.0.0.0
-redis_slave_source:            192.168.7.80
-
+redis_bind_address:            0.0.0.0

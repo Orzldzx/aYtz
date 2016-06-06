@@ -1,13 +1,20 @@
 [client]
+{% if hostType == "mysql_master" %}
 port        = {{ mysql_master_port }}
+{% elif hostType == "mysql_slave" %}
+port        = {{ mysql_slave_port }}
+{% endif %}
 socket      = /var/run/mysqld/mysqld.sock
-
 
 [mysqld]
 user        = mysql
 pid-file    = /var/run/mysqld/mysqld.pid
 socket      = /var/run/mysqld/mysqld.sock
+{% if hostType == "mysql_master" %}
 port        = {{ mysql_master_port }}
+{% elif hostType == "mysql_slave" %}
+port        = {{ mysql_slave_port }}
+{% endif %}
 basedir     = /usr
 datadir     = {{ mysql_datadir }}
 tmpdir      = /tmp
@@ -38,10 +45,10 @@ skip_name_resolve
 #-------
 
 log_error                       = /var/log/mysql/error.log
-server-id                       = {{ mysql_master_id }}
-log_bin                         = {{ mysql_master_bin_log }}/mysql-bin.log
+server-id                       = {{ mysql_id }}
+log_bin                         = {{ mysql_bin_log }}/mysql-bin.log
 expire_logs_days                = 1
-max_binlog_size                 = 500M
+max_binlog_size                 = 1G
 innodb_file_per_table           = 1
 explicit_defaults_for_timestamp = true
 log_slave_updates               = 1
@@ -49,20 +56,16 @@ log_slave_updates               = 1
 #innodb_open_files       	= 65535
 #open_files_limit        	= 200000
 
-
 [mysqldump]
 quick
 quote-names
 max_allowed_packet  = 16M
 
-
 [mysql]
-
 
 [isamchk]
 key_buffer      = 16M
 !includedir /etc/mysql/conf.d/
-
 
 [mysqld_safe]
 socket      = /var/run/mysqld/mysqld.sock

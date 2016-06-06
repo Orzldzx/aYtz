@@ -1,5 +1,6 @@
 ---
-- name: start mongodb
-  shell: /opt/mongodb/bin/mongod -f /etc/mongodb/mongod.conf 
-- name: del mongo.tgz
-  shell: rm -rf /opt/mongodb-3.0.6.tgz
+- name: Start mongodb
+  shell: /opt/mongodb/bin/mongod -f /etc/mongodb/mongod.conf
+
+- name: Delete mongodb package
+  file: path=/opt/mongodb-3.0.6.tgz state=absent

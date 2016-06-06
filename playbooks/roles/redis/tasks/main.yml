@@ -1,3 +1,4 @@
 ---
- - include: install_redis_master.yml  
-# - include: install_redis_slaver.yml
+
+- include: install_redisdb.yml
+  when: hostType == "redis_master" or hostType == "redis_slave"

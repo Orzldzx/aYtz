@@ -1,12 +1,16 @@
 ---
 
-- hosts: gameserver
-  remote_user: ximi
+#- hosts: aaa
+#  remote_user: ximi
 #  gather_facts: False
-  sudo: yes
+#  sudo: yes
+#  roles:
+#  - common
+
+- hosts: aaa
+  remote_user: root
   roles:
-  - common
-  - zabbix
-  - mysql
-  - redis
-  - mongo
+  - { role: zabbix, tags: [ "zabbix" ] }
+  - { role: mysql, tags: [ "mysql" ] }
+  - { role: redis, tags: [ "redis" ] }
+  - { role: mongo, tags: [ "mongo" ] }

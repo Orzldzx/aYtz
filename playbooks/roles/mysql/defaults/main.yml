@@ -1,17 +1,6 @@
 ---
 
-mysql_master_id: 100
-mysql_master_port: 3306
 mysql_bind_address: 0.0.0.0
 
-mysql_root_pass: XimiMsat19292014
-
 mysql_datadir: /data/mysql/db
-mysql_master_bin_log: /data/mysql/binlog
-
-mysql_users: 
-  - { name: "dbaroot", pass: "ximiRlave20141751", priv: "*.*:ALL" }
-  - { name: "view", pass: "0528ximi2014", priv: "*.*:SELECT" }
-
-mysql_repl_user:
-  - { name: "ximislave", pass: "ximisSlave20141738" }
+mysql_bin_log: /data/mysql/binlog

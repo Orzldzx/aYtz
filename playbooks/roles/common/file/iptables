@@ -7,7 +7,7 @@
 # 获取出口ip,需要有其他的在通过IP判断.(Ksyun)
 ip=$(cat /etc/wan)
 SSHPort=$(ss -4tnpl|awk '/sshd/ {print $4}'|sed 's/[^0-9]//g')
-JumpServerIp="10.140.34.28"
+JumpServerIp="120.92.226.38"
 
 # 停止防火墙
 stop_to_all(){
@@ -66,6 +66,8 @@ start_to_all(){
     iptables -A INPUT -p esp -j ACCEPT
     iptables -A INPUT -p ah -j ACCEPT
     iptables -A INPUT -s 182.138.102.186 -j ACCEPT
+    iptables -A INPUT -s 192.168.7.0/32 -j ACCEPT
+    iptables -A INPUT -s 120.92.226.38 -j ACCEPT
     iptables -A INPUT -s 10.0.0.0/8 -j ACCEPT
 
     # filter表
@@ -169,5 +171,5 @@ case $arg in
 esac
 
 # rsync 推送回各个防火墙当前状态
-/sbin/iptables-save > /tmp/${ip}-status.iptables
-rsync -azP --port=1888 /tmp/${ip}-status.iptables $JumpServerIp::iptables-bak/status/ &> /dev/null
+#/sbin/iptables-save > /tmp/${ip}-status.iptables
+#rsync -azP --port=1888 /tmp/${ip}-status.iptables $JumpServerIp::iptables-bak/status/ &> /dev/null

@@ -1,6 +1,6 @@
 ---
-- name: start redis-server
+- name: Start redis-server
   shell: /opt/redis/src/redis-server /etc/redis/redis.cnf
 
-- name: del redis.tgz
-  shell: rm -rf /opt/redis-3.0.4.tar.gz
+- name: Delete redisdb package
+  file: path=/opt/redis-3.0.4.tar.gz state=absent

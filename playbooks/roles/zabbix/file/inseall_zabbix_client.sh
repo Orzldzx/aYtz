@@ -9,8 +9,8 @@ zabbix ALL=(ALL) NOPASSWD:/bin/mkdir
 zabbix ALL=(ALL) NOPASSWD:/bin/chmod
 EOF
 
-tar xf /tmp/zabbix-2.4.6.tar.gz -C /tmp/
-cd /tmp/zabbix-2.4.6
+tar xf /tmp/zabbix-2.4.6.tar.gz -C /opt/
+cd /opt/zabbix-2.4.6
 
 # 安装
 ./configure --prefix=/opt/zabbix-2.4.6 --enable-agent

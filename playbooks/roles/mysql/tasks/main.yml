@@ -1,5 +1,4 @@
 ---
 
-- include: install_mysql_master.yml
-
-#- include: install_mysql_slave.yml
+- include: install_mysql.yml
+  when: hostType == "mysql_master" or hostType == "mysql_slave"
