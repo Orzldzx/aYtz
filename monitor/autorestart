@@ -1,0 +1,115 @@
+#!/bin/bash 
+#version 1.0
+#edit by  lzqie
+>email_list
+check_svrd ()
+{ 
+WEB_SITE_discovery () { 
+WEB_SITE=($(cat /svndata/svr/mod.txt  |awk '{print $1}'))
+        printf '{\n' 
+        printf '\t"data":[\n' 
+for((i=0;i<${#WEB_SITE[@]};++i)) 
+{ 
+        num=$(echo $((${#WEB_SITE[@]}-1))) 
+        if [ "$i" != ${num} ]; 
+                then 
+        printf "\t\t{ \n" 
+        printf "\t\t\t\"{#SITENAME}\":\"${WEB_SITE[$i]}\"},\n" 
+                else 
+                        printf  "\t\t{ \n" 
+                        printf  "\t\t\t\"{#SITENAME}\":\"${WEB_SITE[$num]}\"}]}\n" 
+        fi 
+} 
+} 
+get_value ()
+ {
+GetPID ()
+ {
+    PsUser=$1
+    PsName=$2
+    pid=`ps -u $PsUser|grep $PsName|grep -v grep|grep -v vi|grep -v dbx |grep -v tail|grep -v start|grep -v stop |sed -n 1p |awk '{print $1}'`
+    echo $pid
+ }
+
+PID=`GetPID root $1`
+GetMem ()
+    {
+        MEMUsage=`ps -o vsz -p $1|grep -v VSZ`
+        MEMUsage=`echo "sclae=2; $MEMUsage/1000" | bc`
+        echo $MEMUsage 
+    }
+case $2 in
+cpu)
+cpu_usage=`ps  -p $PID -o pcpu |grep -v CPU | awk '{print $1}'`
+echo $cpu_usage
+;;
+mem)
+mem_usage=`GetMem $PID`
+echo $mem_usage
+;;
+swap)
+swap_usage=`awk '/^Swap:/ {SWAP+=$2}END{print SWAP}' /proc/$PID/smaps`
+if [ $swap_usage -eq 0 ]
+then
+echo 0
+else
+echo $swap_usage
+fi
+;;
+*)
+echo "Wrong"
+;;
+esac
+ }
+get_ifrun ()
+{
+num=$(pgrep $1|wc -l)
+num=$((num+1))
+echo $num
+}
+
+
+case "$1" in 
+web_site_discovery) 
+WEB_SITE_discovery 
+;; 
+web_site_code) 
+get_value  $2  $3
+;; 
+get_ifrun) 
+get_ifrun  $2
+;; 
+*) 
+echo "Usage:$0 {web_site_discovery|web_site_code [URL]|get_ifrun[servicename]}" 
+;; 
+esac 
+
+}
+
+#main 
+hn=`hostname`
+ip=`curl -s ip.cn|grep -o '\([0-9]\{1,3\}\.\)\{3\}[0-9]\{1,3\}'`
+email_ip=120.92.226.38
+while true
+do
+    now=`date +%F\ %T`
+    cat /svndata/svr/mod.txt |while read  svrd start
+    do
+        
+        echo $svrd
+        count=`check_svrd get_ifrun  $svrd`
+        echo "$svrd $count" >>/tmp/abc
+        if [[ $count -lt 2  ]]
+        then
+          Process=`ps aux|grep "restart.sh"|grep "$svrd"|grep -v "grep"|wc -l`
+            /svndata/svr/autorestart/bin/restart.sh $svrd &
+             sleep 30
+            >email_list
+            wget -q -O email_list.txt  http://$email_ip/xyj/email_list.ddz
+            for  i  in  `awk '{print $2}'  email_list.txt ` ;do  echo -n  ${i}",">>email_list;done
+            email_list=`cat email_list`
+            /svndata/svr/autorestart/bin/sendEmail  -f ximi_idc@163.com -t $email_list  -s smtp.163.com -u "AutoRe  <hn:$hn>===$svrd==="  -xu ximi_idc@163.com -xp "xi*&&^&(hjll1405"  -m "At  time  $now ; ---$svrd--- ip(eth1): $ip   hostname: $hn  ;after down to do Restaring!!!"   >> email.log
+         fi
+    done
+    sleep 10
+done &
