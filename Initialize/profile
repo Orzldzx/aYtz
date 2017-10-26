@@ -60,12 +60,12 @@ mkcd(){ mkdir -p $1 ; cd $1 ; }
 
 #------------------------------------------------------
 
-LanIp=$(ip addr show eth0|awk '/inet / {print $2}')
+LanIp=$(ip addr show enp2s0|awk '/inet / {print $2}')
 
 if [ $(id -u) != "0" ]; then
-PS1="\[\e[1;33m\]\h \[\e[m\]\[\e[1;30m\][ Wan:$(cat /etc/wan) Lan:$(echo $LanIp) ]\[\e[m\]\[\e[1;35m\] \w \n\t reado$\[\e[m\]"
+    PS1="\[\e[1;33m\]\h \[\e[m\]\[\e[1;30m\][ Wan:$(cat /etc/wan) Lan:${LanIp} ]\[\e[m\]\[\e[1;35m\] \w \n\t reado$\[\e[m\] "
 else
-PS1="\[\e[1;33m\]\h \[\e[m\]\[\e[1;36m\][ Wan:$(cat /etc/wan) Lan:$(echo $LanIp) ]\[\e[m\]\[\e[1;32m\] \w \n\t#\[\e[m\]"
+    PS1="\[\e[1;33m\]\h \[\e[m\]\[\e[1;36m\][ Wan:$(cat /etc/wan) Lan:${LanIp} ]\[\e[m\]\[\e[1;32m\] \w \n\t#\[\e[m\] "
 fi
 
 #------------------------------------------------------
