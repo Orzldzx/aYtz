@@ -51,8 +51,9 @@ def sendMail(mailHost,mailUser,mailPass,mailToList,me,sub,content,atts=None):
             msg.attach(n)
     # -----
     try:
-        s = smtplib.SMTP()
-        s.connect(mailHost)                         # 连接smtp服务器
+        s = smtplib.SMTP()                          # 明文/TSL
+        #s = smtplib.smtplib.SMTP_SSL()             # SSL
+        s.connect(mailHost, mailProt)               # 连接smtp服务器
         s.login(mailUser,mailPass)                  # 登陆服务器
         s.sendmail(me, mailToList, msg.as_string()) # 发送邮件
         s.close()                                   # 关闭连接
@@ -65,6 +66,7 @@ def sendMail(mailHost,mailUser,mailPass,mailToList,me,sub,content,atts=None):
 
 if __name__ == '__main__':
     mailHost    = "xxx.xx.com"  # 设置服务器
+    mailProt    = 25            # 服务器端口
     mailUser    = "xxx@yyy.com" # 用户名
     mailPass    = "xxxxxx"      # 密码
     # -----
